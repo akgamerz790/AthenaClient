@@ -10,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.minecraft.client.network.ClientPlayerEntity;
 
+// Import CompassCommand
+import dev.akgamerz_790.athenaclient.command.CompassCommand;
+
 @Environment(EnvType.CLIENT)
 public class AthenaClient implements ClientModInitializer {
 
@@ -31,6 +34,7 @@ public class AthenaClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         INSTANCE = this;
+        CompassCommand.register();
 
         LOGGER.info("[{}] Initializing v{} on Minecraft 1.21.11", MOD_NAME, MOD_VERSION);
 

@@ -14,12 +14,12 @@ import net.minecraft.world.LightType;
 @Environment(EnvType.CLIENT)
 public class HudRenderer {
 
-    private static final int COLOR_WHITE  = 0xFFFFFF;
-    private static final int COLOR_GREEN  = 0x00FF88;
-    private static final int COLOR_YELLOW = 0xFFAA00;
-    private static final int COLOR_CYAN   = 0x55FFFF;
-    private static final int COLOR_RED    = 0xFF5555;
-    private static final int COLOR_PURPLE = 0xAA55FF;
+    private static final int COLOR_WHITE  = 0xFFFFFFFF;
+    private static final int COLOR_GREEN  = 0xFF00FF88;
+    private static final int COLOR_YELLOW = 0xFFFFAA00;
+    private static final int COLOR_CYAN   = 0xFF55FFFF;
+    private static final int COLOR_RED    = 0xFFFF5555;
+    private static final int COLOR_PURPLE = 0xFFAA55FF;
 
     private static final int X           = 4;
     private static final int LINE_HEIGHT = 11;
@@ -92,10 +92,75 @@ public class HudRenderer {
             draw(ctx, mc, String.format("Light  Sky: %d  Block: %d", sky, block), X, y, COLOR_WHITE);
             y += LINE_HEIGHT;
         }
+
+        // CORNERED COMPASS PRO
+        if (HudConfig.showCompassRose) {
+            renderCompassRose(ctx, mc, player);
+        }
     }
 
     private static void draw(DrawContext ctx, MinecraftClient mc, String text, int x, int y, int color) {
         ctx.drawText(mc.textRenderer, text, x, y, color, true);
+    }
+
+    private static void renderCompassRose(DrawContext ctx, MinecraftClient mc, PlayerEntity player) {
+        float yaw = normalizeYaw(player.getYaw());
+
+        int boxX = 4;
+        int boxY = 4 + (LINE_HEIGHT * 8);
+        int boxSize = 60;
+        int centerX = boxX + boxSize / 2;
+        int centerY = boxY + boxSize / 2;
+        int radius = 24;
+
+        // Background
+        if (HudConfig.compassShape == HudConfig.CompassShape.CIRCLE) {
+            // Draw circle background using filled segments
+            drawCircleBackground(ctx, centerX, centerY, radius + 6, 0xAA000000);
+        } else {
+            ctx.fill(boxX, boxY, boxX + boxSize, boxY + boxSize, 0xAA000000);
+        }
+
+        // Direction labels — smooth because yaw is float
+        String[] dirs = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"};
+        float[] angles = {180f, 225f, 270f, 315f, 0f, 45f, 90f, 135f};
+
+        for (int i = 0; i < dirs.length; i++) {
+            float angle = (float) Math.toRadians(angles[i] + yaw);
+            float dx = (float) Math.sin(angle) * radius;
+            float dy = (float) -Math.cos(angle) * radius;
+
+            // Circle shape — skip if outside radius
+            if (HudConfig.compassShape == HudConfig.CompassShape.CIRCLE) {
+                float dist = (float) Math.sqrt(dx * dx + dy * dy);
+                if (dist > radius + 2) continue;
+            }
+
+            int tx = centerX + (int) dx - mc.textRenderer.getWidth(dirs[i]) / 2;
+            int ty = centerY + (int) dy - mc.textRenderer.fontHeight / 2;
+
+            int color;
+            if (dirs[i].equals("N"))       color = 0xFFFF5555;
+            else if (dirs[i].length() == 1) color = 0xFFFFFFFF;
+            else                            color = 0xFFAAAAAA;
+
+            ctx.drawTextWithShadow(mc.textRenderer, dirs[i], tx, ty, color);
+        }
+
+        // Center dot
+        ctx.fill(centerX - 1, centerY - 1, centerX + 2, centerY + 2, 0xFFFFFFFF);
+
+        // Current facing label
+        String facing = getFacing(player.getYaw());
+        int facingX = boxX + (boxSize - mc.textRenderer.getWidth(facing)) / 2;
+        ctx.drawTextWithShadow(mc.textRenderer, facing, facingX, boxY + boxSize + 2, 0xFFFFAA00);
+    }
+
+    private static void drawCircleBackground(DrawContext ctx, int cx, int cy, int r, int color) {
+        for (int y = -r; y <= r; y++) {
+            int halfWidth = (int) Math.sqrt(r * r - y * y);
+            ctx.fill(cx - halfWidth, cy + y, cx + halfWidth, cy + y + 1, color);
+        }
     }
 
     private static int renderArmor(DrawContext ctx, MinecraftClient mc, PlayerEntity player, int y) {

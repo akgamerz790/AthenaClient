@@ -8,4 +8,13 @@ public class HudConfig {
     public static boolean showDimension = true;
     public static boolean showArmor     = true;
     public static boolean showLight     = true;
+    // Added Compass Show
+    public static boolean showCompass = true;
+
+    // Added Compass Circle Config
+    public static boolean showCompassRose = true;
+
+    // COmpass Ring Config
+    public enum CompassShape { CIRCLE, SQUARE }
+    public static CompassShape compassShape = CompassShape.CIRCLE;
 }
