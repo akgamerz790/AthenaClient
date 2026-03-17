@@ -1,0 +1,11 @@
+.gradle
+*.vscode
+bin/
+obj/
+.env
+.ENV
+build/
+/bin/*
+!/bin/.gitkeep
+gradle
+run/

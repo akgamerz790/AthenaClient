@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "dev.akgamerz_790.athenaclient.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "GameRendererMixin",
+    "ParticleManagermixin",
+    "ParticleEngineMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

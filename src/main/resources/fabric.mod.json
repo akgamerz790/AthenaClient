@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "athenaclient",
+  "version": "${version}",
+  "name": "AthenaClient",
+  "description": "Performance + HUD client mod for Minecraft 1.21.11",
+  "authors": ["akgamerz_790", "Athena", "AthenaClient"],
+  "environment": "client",
+  "entrypoints": {
+    "client": ["dev.akgamerz_790.athenaclient.AthenaClient"]
+  },
+  "mixins": ["athenaclient.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.18.1",
+    "minecraft": "1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
