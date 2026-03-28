@@ -14,7 +14,7 @@ public class PerformanceTweaks {
 
     // Tuneable constants
     private static final int MAX_PARTICLES = 2000;
-    private static final int UNFOCUSED_FPS_CAP = 15;
+    private static final int UNFOCUSED_FPS_CAP = 0;
     private static final int FOCUSED_FPS_CAP = 0; // 0 = unlimited (uses in-game setting)
 
     private static boolean initialized = false;

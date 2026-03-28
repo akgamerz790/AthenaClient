@@ -13,12 +13,18 @@ import net.minecraft.client.network.ClientPlayerEntity;
 // Import CompassCommand
 import dev.akgamerz_790.athenaclient.command.CompassCommand;
 
+// Import DiscordRPC
+import dev.akgamerz_790.athenaclient.discord.DiscordIPC;
+
+// Import Discord Library / Presence Updater+
+import dev.akgamerz_790.athenaclient.discord.PresenceUpdater;
+
 @Environment(EnvType.CLIENT)
 public class AthenaClient implements ClientModInitializer {
 
     public static final String MOD_ID = "athenaclient";
     public static final String MOD_NAME = "AthenaClient";
-    public static final String MOD_VERSION = "1.0.0";
+    public static final String MOD_VERSION = "1.0.4";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
     private static AthenaClient INSTANCE;
@@ -35,6 +41,8 @@ public class AthenaClient implements ClientModInitializer {
     public void onInitializeClient() {
         INSTANCE = this;
         CompassCommand.register();
+        // Presenceupdater Starter
+        PresenceUpdater.start();
 
         LOGGER.info("[{}] Initializing v{} on Minecraft 1.21.11", MOD_NAME, MOD_VERSION);
 
@@ -52,6 +60,18 @@ public class AthenaClient implements ClientModInitializer {
             LOGGER.error("[{}] Failed to register performance tweaks: {}", MOD_NAME, e.getMessage());
         }
 
+        try{
+            DiscordIPC.start();
+        }catch (Exception e) {
+            LOGGER.warn("[{}] Discord IPC failed: {}", MOD_NAME, e.getMessage());
+        }
+
         LOGGER.info("[{}] Done.", MOD_NAME);
+
+        // Presence shutdown on exit asf
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            DiscordIPC.stop();
+            PresenceUpdater.stop();
+        }));
     }
 }

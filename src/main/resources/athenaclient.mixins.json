@@ -5,7 +5,8 @@
   "client": [
     "GameRendererMixin",
     "ParticleManagerMixin",
-    "ParticleEngineMixin"
+    "ParticleEngineMixin",
+    "ScoreboardMixin"
   ],
   "injectors": {
     "defaultRequire": 1

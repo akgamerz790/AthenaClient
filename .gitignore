@@ -9,3 +9,5 @@ build/
 !/bin/.gitkeep
 gradle
 run/
+*.log
+[Ll]og/
